@@ -15,8 +15,8 @@ name = "sqlx_serde"
 futures = "0.3.28"
 serde = { version = "1.0.178", features = ["derive"] }
 serde_json = "1.0.104"
-sqlx = { version = "0.8", features = ["postgres"] }
-sqlx-core = { version = "0.8" }
+sqlx = { version = "0.9", features = ["postgres"] }
+sqlx-core = { version = "0.9" }
 time = { version = "0.3" }
 tokio = { version = "1.29.1"}
 
