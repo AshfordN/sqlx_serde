@@ -85,11 +85,21 @@ pub fn serialize_pgvalueref<S>(value: &PgValueRef, s: S) -> Result<S::Ok, S::Err
             let v = v.format("%Y-%m-%dT%H:%M:%S.%f").to_string();
             s.serialize_str(&v)
         }
+        #[cfg(feature = "time")]
+        "TIMESTAMP" => {
+            let v: sqlx::types::time::PrimitiveDateTime = Decode::<Postgres>::decode(value).unwrap();
+            v.serialize(s)
+        }
         #[cfg(feature = "chrono")]
         "TIMESTAMPTZ" => {
             use sqlx::types::chrono;
             let v: chrono::DateTime::<chrono::Utc> = Decode::<Postgres>::decode(value).unwrap();
             s.serialize_str(&v.to_rfc3339())
+        }
+        #[cfg(feature = "time")]
+        "TIMESTAMPTZ" => {
+            let v: sqlx::types::time::OffsetDateTime = Decode::<Postgres>::decode(value).unwrap();
+            v.serialize(s)
         }
         #[cfg(feature = "chrono")]
         "DATE" => {
@@ -97,11 +107,21 @@ pub fn serialize_pgvalueref<S>(value: &PgValueRef, s: S) -> Result<S::Ok, S::Err
             let v: chrono::NaiveDate = Decode::<Postgres>::decode(value).unwrap();
             s.serialize_str(&v.to_string())
         }
+        #[cfg(feature = "time")]
+        "DATE" => {
+            let v: sqlx::types::time::Date = Decode::<Postgres>::decode(value).unwrap();
+            v.serialize(s)
+        }
         #[cfg(feature = "chrono")]
         "TIME" => {
             use sqlx::types::chrono;
             let v: chrono::NaiveTime = Decode::<Postgres>::decode(value).unwrap();
             s.serialize_str(&v.to_string())
+        }
+        #[cfg(feature = "time")]
+        "TIME" => {
+            let v: sqlx::types::time::Time = Decode::<Postgres>::decode(value).unwrap();
+            v.serialize(s)
         }
         #[cfg(feature = "uuid")]
         "UUID" => {
